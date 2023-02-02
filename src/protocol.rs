@@ -5,7 +5,7 @@ use core::task::{Context, Poll};
 
 use embedded_hal::timer::CountDown;
 
-use crate::requests::{BorrowedRequest, Command};
+use crate::requests::{BorrowedRequest, Command, VersionInfo};
 use crate::{Interface, Request};
 
 const PREAMBLE: [u8; 3] = [0x00, 0x00, 0xFF];
@@ -281,6 +281,21 @@ impl<I: Interface, const N: usize> Pn532<I, (), N> {
             interface,
             timer: (),
             buf: [0; N],
+        }
+    }
+
+    // TODO: non-async version
+    pub async fn get_firmware_version(&mut self) -> VersionInfo {
+        let response = self
+            .process_async(&Request::GET_FIRMWARE_VERSION, 4)
+            .await
+            .unwrap();
+            // TODO: errors handling with ?
+        VersionInfo {
+            ic: response[0],
+            version: response[1],
+            revision: response[2],
+            support: response[3],
         }
     }
 

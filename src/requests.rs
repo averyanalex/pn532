@@ -249,3 +249,13 @@ pub enum MifareCommand {
     Restore = 0xC2,
     Transfer = 0xB0,
 }
+
+#[derive(Clone, Eq, PartialEq, Debug)]
+pub struct VersionInfo {
+    pub ic: u8,
+    // TODO: convert 0x32 to 32u8?
+    pub version: u8,
+    pub revision: u8,
+    pub support: u8,
+    // TODO: SupportInfo struct
+}
